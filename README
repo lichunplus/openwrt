@@ -1,29 +1,46 @@
 This is the buildsystem for the LEDE Linux distribution.
 
-Please use "make menuconfig" to choose your preferred
-configuration for the toolchain and firmware.
-
+依赖：
 You need to have installed gcc, binutils, bzip2, flex, python, perl, make,
 find, grep, diff, unzip, gawk, getopt, subversion, libz-dev and libc headers.
 
-Run "./scripts/feeds update -a" to get all the latest package definitions
-defined in feeds.conf / feeds.conf.default respectively
-and "./scripts/feeds install -a" to install symlinks of all of them into
-package/feeds/.
 
-Use "make menuconfig" to configure your image.
 
-Simply running "make" will build your firmware.
-It will download all sources, build the cross-compile toolchain, 
-the kernel and all choosen applications.
-
-To build your own firmware you need to have access to a Linux, BSD or MacOSX system
-(case-sensitive filesystem required). Cygwin will not be supported because of
-the lack of case sensitiveness in the file system.
+1) 获取feeds.conf/feeds.conf.default配置的所有feed源码，一个feed提供多个package
+  #./scripts/feeds update -a
+    ①当feeds.conf不存在才会使用feeds.conf.default
+    ②一个feed包括：两个目录feedname和feedname.tmp，
+                    两个符号链接feedname.index和feedname.targetindex
+    
+2) 安装所有package编译目录链接到package/feeds/目录，按feed分类
+  #./scripts/feeds install -a
+    ①package/feeds/下每个目录表示一个feed
+    ②package/feeds/{feedname}下每个链接表示一个package
+    
+3) 配置 toolchain、firmware、image、default IP、luci
+  #make menuconfig
+    Target System → "Marvell Kirkwood"
+    Target Profile → "Linksys EA3500 (Audi)"
+    Target Images → randisk+squashfs
+    Image configuration → "10.88.120.1/24"
+    luci → luci
+    
+4) 配置环境
+  #export FORCE_UNSAFE_CONFIGURE=1
+  #echo "r{version}" > version}
+    ①处于安全考虑，默认限制root用户启动编译命令
+    ②编译正式版本时，请填写真确版本号
+    
+5) 开始编译firmware
+  #make -j1 V=s
+  #make 
+    下载源码 & 编译交叉编译工具链 & 编译内核 & 编译选中的应用
+    
+6) clean
+  #make clean
+  #make distclean
+    删除.config、package/feeds
 
 
 Sunshine!
-	Your LEDE Community
-	http://www.lede-project.org
-
-
+    706701795@qq.com

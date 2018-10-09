@@ -1,10 +1,7 @@
 This is the buildsystem for the LEDE Linux distribution.
 
 依赖：
-You need to have installed gcc, binutils, bzip2, flex, python, perl, make,
-find, grep, diff, unzip, gawk, getopt, subversion, libz-dev and libc headers.
-
-
+RHEL:gcc binutils bzip2 flex python perl make grep unzip gawk subversion libzip-devel glibc-headers wget patch perl-Thread-Queue zlib-static ncurses-devel gcc-c++
 
 1) 获取feeds.conf/feeds.conf.default配置的所有feed源码，一个feed提供多个package
   #./scripts/feeds update -a
@@ -19,16 +16,17 @@ find, grep, diff, unzip, gawk, getopt, subversion, libz-dev and libc headers.
     
 3) 配置 toolchain、firmware、image、default IP、luci
   #make menuconfig
-    Target System → "Marvell Kirkwood"
-    Target Profile → "Linksys EA3500 (Audi)"
-    Target Images → randisk+squashfs
-    Image configuration → "10.88.120.1/24"
-    luci → luci
+    Target System → "Marvell Kirkwood" or "Atheros AR7xxx/AR9xxx"
+    Target Profile → "Linksys EA3500 (Audi)" or "NETGEAR WNDR3800"
+    luci → Collections → luci
+    network → shadowsocks-libev
+    luci → Applications → luci-app-shadowsocks-libev
+    
     
 4) 配置环境
   #export FORCE_UNSAFE_CONFIGURE=1
   #echo "r{version}" > version}
-    ①处于安全考虑，默认限制root用户启动编译命令
+    ①出于安全考虑，默认限制root用户启动编译命令
     ②编译正式版本时，请填写真确版本号
     
 5) 开始编译firmware
